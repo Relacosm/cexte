@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            width: 420px;
+            min-height: 350px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 300;
+        }
+
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            backdrop-filter: blur(10px);
+            font-size: 13px;
+        }
+
+        .status.detecting {
+            border-left: 4px solid #ffd700;
+        }
+
+        .status.found {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .status.not-found {
+            border-left: 4px solid #ff9800;
+        }
+
+        .status.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            backdrop-filter: blur(10px);
+            max-height: 280px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .summary {
+            padding: 12px;
+            line-height: 1.4;
+        }
+
+        .risk-indicator {
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .risk-low {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid rgba(40, 167, 69, 0.4);
+        }
+
+        .risk-medium {
+            background-color: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.4);
+        }
+
+        .risk-high {
+            background-color: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+        }
+
+        .summary-section {
+            margin-bottom: 14px;
+            padding: 10px;
+            background-color: rgba(248, 249, 250, 0.1);
+            border-radius: 6px;
+        }
+
+        .summary-section h3 {
+            margin: 0 0 8px 0;
+            color: #ffd700;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .summary-text {
+            color: #e8e8e8;
+            line-height: 1.4;
+            font-size: 12px;
+        }
+
+        .category {
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .category-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 10px;
+            font-weight: 600;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-count {
+            background: rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .category-items {
+            padding: 8px 10px;
+        }
+
+        .category-item {
+            margin-bottom: 6px;
+            padding: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 1.3;
+            color: #e0e0e0;
+        }
+
+        .category-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .metadata {
+            font-size: 10px;
+            color: rgba(11, 11, 11, 0.7);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .no-concerns {
+            padding: 16px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 ClearTerms</h1>
+    </div>
+
+    <div id="status" class="status detecting">
+        <div id="status-text">Detecting Terms & Conditions...</div>
+    </div>
+
+    <div id="content" class="content" style="display: none;">
+        <div id="summary" class="summary"></div>
+    </div>
+
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">Analyzing terms & conditions...</div>
+    </div>
+
+    <div class="buttons">
+        <button id="summarize-btn" class="btn btn-primary" disabled>Analyze</button>
+        <button id="options-btn" class="btn btn-secondary">Options</button>
+    </div>
+
+    <!-- Ko-fi Support Link -->
+    <div style="text-align: center; margin-top: 12px; font-size: 14px;">
+        <a href="https://ko-fi.com/relacosm" target="_blank" style="color: #ffd700; text-decoration: none;">
+            ☕ Buy me a coffee
+        </a>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
